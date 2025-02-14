@@ -1,0 +1,9 @@
+This is an implementation of congruent closure algorithm to find if a statement satisfiable or not and is implemented by JVM 21.0.2.
+to test it please put the formulas in the formulas.txt file.
+There is a config in application.properties that you can enable or disable the heuristics.
+After setting up the jvm and application.properties and put the formulas in the formulas.txt and use this command to execute the solver.
+
+java -jar CCSolver-1.0.jar
+
+The output of algorithm is in the output.txt file.
+There are some sample formulas in formulas test to test the solver and all of them are from notes of ar classes.

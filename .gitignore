@@ -1,0 +1,42 @@
+# Ignore IntelliJ IDEA specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Ignore build directory
+/target/
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore compiled Java class files
+*.class
+
+# Ignore Maven dependencies
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Ignore Spring Boot specific files
+application.properties
+application.yml
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore generated files
+/out/
+
+# Ignore environment variables and secrets
+.env
+/secrets/
+
+# Ignore test reports
+/test-output/
+
+# Ignore IntelliJ project metadata
+/.idea/
+/!.idea/modules.xml
+/!.idea/misc.xml

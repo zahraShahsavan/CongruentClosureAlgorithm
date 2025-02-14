@@ -1,0 +1,36 @@
+1
+f(a,b)=a;
+f(f(a,b),b)=a;
+SAT
+
+2
+a=b;
+f(a)!=f(b);
+UNSAT
+
+3
+f(f(f(a))) = a;
+f(f(f(f(f(a))))) = a;
+f(a) != a;
+UNSAT
+
+4
+can(a) = can(b);
+cdr(a) = cdr(b);
+-atom(a);
+-atom(b);
+f(a)=f(b)
+SAT
+
+5
+can(a) = can(b);
+cdr(a) = cdr(b);
+-atom(a);
+-atom(b);
+f(a)!=f(b)
+UNSAT
+
+6
+a=b;
+f(a)=f(b);
+SAT

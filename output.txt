@@ -1,0 +1,28 @@
+Heuristic is ENABLE
+Input interpreted as path of a file with the formula inside.
+FORMULA:
+a=b;f(a)!=f(b);
+Parsing...
+Created a DAG with 4 nodes and 2 edges in 0.051s
+Executing Congruent Closure Algorithm
+UNSATISFIABLE
+First conflict is between these terms and/or predicates:
+	f(a)
+	f(b)
+Time for parsing: Clock time: 0s, CPU time: 0ms
+Time for CCAlgorithm: Clock time: 0s, CPU time: 0ms
+Total time: Clock time: 0s, CPU time: 0ms
+Heuristic is ENABLE
+Input interpreted as path of a file with the formula inside.
+FORMULA:
+a=b;f(a)!=f(b);
+Parsing...
+Created a DAG with 4 nodes and 2 edges in 3770.160s
+Executing Congruent Closure Algorithm
+UNSATISFIABLE
+First conflict is between these terms and/or predicates:
+	f(a)
+	f(b)
+Time for parsing: Clock time: 3770s, CPU time: 0ms
+Time for CCAlgorithm: Clock time: 1s, CPU time: 0ms
+Total time: Clock time: 3771s, CPU time: 0ms
