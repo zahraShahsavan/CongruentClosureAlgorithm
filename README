@@ -1,9 +1,124 @@
-This is an implementation of congruent closure algorithm to find if a statement satisfiable or not and is implemented by JVM 21.0.2.
-to test it please put the formulas in the formulas.txt file.
-There is a config in application.properties that you can enable or disable the heuristics.
-After setting up the jvm and application.properties and put the formulas in the formulas.txt and use this command to execute the solver.
+# Implementation of a Solver for the Union of Theories of Equality, Lists, and Arrays
 
-java -jar CCSolver-1.0.jar
+## Project Overview
+This project implements a **satisfiability procedure** for the **theory of equality, lists, and arrays** using the **congruence closure algorithm**, as described in Section 9.3 of the Bradley-Manna textbook. The algorithm is enhanced with **heuristic optimizations** on a **Directed Acyclic Graph (DAG)** where each **node** represents a term in the formula, and each **edge** connects a term to its arguments.
 
-The output of algorithm is in the output.txt file.
-There are some sample formulas in formulas test to test the solver and all of them are from notes of ar classes.
+### **Configuration**
+- The system allows enabling/disabling heuristics for performance testing via `application.properties`:
+  ```properties
+  heuristics=ENABLE
+  ```
+
+### **Formula Input**
+- Formulas should be provided in a file named `formulas`.
+- A **JavaCC parser** processes the formulas and initializes a `CCobject`, which contains:
+  - A **HashMap** (`dag`) where keys are **IDs (String)** and values are **Nodes**.
+  - Fields for storing **equal terms, disequalities, atomic terms, etc.**
+
+### **Performance Analysis**
+- A timer is used to measure **parsing** and **execution time**.
+- The **final results**, including:
+  - **SATISFIABLE / UNSATISFIABLE**
+  - **Processing time**
+  - **Generated DAG details**
+  - Are stored in `output.txt`.
+
+---
+
+## Programming Language & Tools
+- **Java**
+- **JavaCC (Parser Generator)** for processing formulas
+
+## Data Structures
+- **Node**: Represents terms in the DAG, storing:
+  - `id`, `fn`, `find`, `args`, `ccpar`, `forbidden_set`
+  - `forbidden_set` stores IDs of nodes that must not be in the same equivalence class.
+- **CCobject**: Stores the **DAG**, **equalities**, **disequalities**, and **atomic terms**.
+- **TermPair**: Stores **conflicting, equal, or disequal term pairs**.
+- **DAG**: Implemented using a **HashMap** (`id → Node`).
+
+---
+
+## Grammar Definition (LL(2) Context-Free Grammar in BNF)
+```bnf
+Formula ::= Clause (; Clause? )*
+Clause ::= Term = Term | Term != Term | atom(Term) | -atom(Term) | (-)? Pred(Term (, Term)*)
+Term ::= cons(Term, Term) | car(Term) | cdr(Term) | FunVar(Term (, Term)*) | FunVar
+```
+- **Predicates:** Uppercase (e.g., `P1`, `P2`)
+- **Functions/Variables:** Lowercase (e.g., `f`, `g`)
+- **Negation Handling:** Uses special characters to avoid shell conflicts.
+- **HashMap Usage:** Maps symbols to argument counts.
+
+---
+
+## Predicate Handling
+### **Equality Predicates (`=`, `!=`)**
+- Stored as **pairs** in a `TermPair` class.
+
+### **`atom(Term)` Predicate**
+- **Positive:** Added to a set of atomic terms.
+- **Negative:** Transformed into **three fresh nodes (`cons`, `car`, `cdr`)**.
+
+### **Other Predicates**
+- Converted into functions.
+- Stored in **equality/disequality sets** with a special **`#` symbol**.
+
+---
+
+## Congruence Closure Algorithm
+The **parser constructs the DAG**, and then **the congruence closure algorithm** is executed. Two versions are implemented, selectable via `-h`:
+1. **Standard Implementation** (from *The Calculus of Computation*)
+2. **Optimized Version (Using Heuristics)**
+
+### **Heuristic-Based Optimizations**
+- **Forbidden Set Optimization**:
+  - Each node maintains a **forbidden set** of terms it **must not** merge with.
+  - If a **conflict** occurs during merging, return `UNSAT` immediately.
+- **Algorithm Adjustments**:
+  - If `atom(Term)` arguments contain `cons`, return `UNSAT`.
+  - Expand `cons` nodes into `car` and `cdr` nodes → **Merge them**.
+  - Merge all terms in equality predicate sets → **Return `UNSAT` on conflict**.
+  - **Return `SAT` if no conflicts occur**.
+- **Path Compression (`Find` Operation)**:
+  - Nodes point **directly** to the **representative node** instead of recursively navigating.
+
+---
+
+## Performance Analysis
+### **Benchmark Setup**
+- Tested on **Intel Core i5, Windows 10, JVM 21.0.2**.
+- **6 formulas** tested, replacing them in `formula.txt`.
+
+### **Performance Results**
+| Formula | Nodes | Edges | Result | Time (ms) | Time with Heuristics (ms) |
+|---------|------|------|--------|----------|-----------------------|
+| 1       | 4    | 4    | SAT    | 48       | 57                    |
+| 2       | 4    | 2    | UNSAT  | 47       | 60                    |
+| 3       | 6    | 5    | UNSAT  | 51       | 56*                   |
+| 4       | 14   | 10   | SAT    | 48       | 53                    |
+| 5       | 14   | 10   | UNSAT  | 114      | 57                    |
+| 6       | 4    | 2    | SAT    | 52       | 57                    |
+
+### **Findings**
+- **Heuristics led to incorrect results in formula 3**.
+- **Without heuristics, the performance was generally better**.
+
+---
+
+## Conclusion
+This project successfully implements a **congruence closure-based satisfiability solver** for **equality, lists, and arrays**. The algorithm was extended with **heuristics**, but benchmark tests suggest that the standard implementation performs better in some cases. Future improvements could include:
+- **Optimizing heuristics to ensure correctness**.
+- **Experimenting with additional formula types**.
+- **Improving path compression for faster merging operations**.
+
+---
+
+## How to Run the Project
+1. **Configure Heuristics**:
+   - Open `application.properties` and set `heuristics=ENABLE` or `DISABLE`.
+2. **Run the Java Program**:
+   - Compile and execute the main class.
+3. **Check `output.txt` for results**.
+
+This README provides a complete overview of the implementation, algorithmic details, and results. 🚀
